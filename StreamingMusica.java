@@ -1,39 +1,8 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-// MUSICA
-class Musica {
-    String titulo;
-    String artista;
-    int duracao;
-    String genero;
-
-    void exibir() {
-        System.out.println(titulo + " - " + artista + " - " + duracao + "s - " + genero);
-    }
-}
-
-// PLAYLIST
-class Playlist {
-    String nome;
-    ArrayList<Musica> musicas = new ArrayList<>();
-
-    void adicionarMusica(Musica m) {
-        musicas.add(m);
-    }
-
-    void removerMusica(int i) {
-        musicas.remove(i);
-    }
-}
-
-// USUARIO
-class Usuario {
-    ArrayList<Playlist> playlists = new ArrayList<>();
-}
-
 // MAIN
-public class Main {
+public class StreamingMusica {
 
     static Scanner sc = new Scanner(System.in);
     static ArrayList<Musica> musicas = new ArrayList<>();
