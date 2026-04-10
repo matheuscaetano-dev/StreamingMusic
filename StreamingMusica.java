@@ -1,43 +1,11 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-// MUSICA
-class Musica {
-    String titulo;
-    String artista;
-    int duracao;
-    String genero;
-
-    void exibir() {
-        System.out.println(titulo + " - " + artista + " - " + duracao + "s - " + genero);
-    }
-}
-
-// PLAYLIST
-class Playlist {
-    String nome;
-    ArrayList<Musica> musicas = new ArrayList<>();
-
-    void adicionarMusica(Musica m) {
-        musicas.add(m);
-    }
-
-    void removerMusica(int i) {
-        musicas.remove(i);
-    }
-}
-
-// USUARIO
-class Usuario {
-    ArrayList<Playlist> playlists = new ArrayList<>();
-}
-
-// MAIN
-public class Main {
+public class StreamingMusica {
 
     static Scanner sc = new Scanner(System.in);
     static ArrayList<Musica> musicas = new ArrayList<>();
-    static Usuario usuario = new Usuario();
+    static Usuario usuario = new Usuario("Matheus");
 
     public static void main(String[] args) {
 
@@ -69,21 +37,27 @@ public class Main {
 
     // cadastrar musica
     static void cadastrar() {
-        Musica m = new Musica();
+        try {
+            System.out.print("Titulo: ");
+            String titulo = sc.nextLine();
 
-        System.out.print("Titulo: ");
-        m.titulo = sc.nextLine();
+            System.out.print("Artista: ");
+            String artista = sc.nextLine();
 
-        System.out.print("Artista: ");
-        m.artista = sc.nextLine();
+            System.out.print("Duracao: ");
+            int duracao = Integer.parseInt(sc.nextLine());
 
-        System.out.print("Duracao: ");
-        m.duracao = Integer.parseInt(sc.nextLine());
+            System.out.print("Genero: ");
+            String genero = sc.nextLine();
 
-        System.out.print("Genero: ");
-        m.genero = sc.nextLine();
+            Musica m = new Musica(titulo, artista, duracao, genero);
+            musicas.add(m);
 
-        musicas.add(m);
+            System.out.println("Música cadastrada com sucesso!");
+
+        } catch (Exception e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
     }
 
     // listar musicas
@@ -99,7 +73,7 @@ public class Main {
         }
     }
 
-    // buscar musica (simples)
+    // buscar musica
     static void buscar() {
         System.out.print("Digite algo: ");
         String busca = sc.nextLine().toLowerCase();
@@ -107,9 +81,9 @@ public class Main {
         boolean achou = false;
 
         for (Musica m : musicas) {
-            if (m.titulo.toLowerCase().contains(busca) ||
-                m.artista.toLowerCase().contains(busca) ||
-                m.genero.toLowerCase().contains(busca)) {
+            if (m.getTitulo().toLowerCase().contains(busca) ||
+                m.getArtista().toLowerCase().contains(busca) ||
+                m.getGenero().toLowerCase().contains(busca)) {
 
                 m.exibir();
                 achou = true;
@@ -123,12 +97,18 @@ public class Main {
 
     // criar playlist
     static void criarPlaylist() {
-        Playlist p = new Playlist();
+        try {
+            System.out.print("Nome da playlist: ");
+            String nome = sc.nextLine();
 
-        System.out.print("Nome da playlist: ");
-        p.nome = sc.nextLine();
+            Playlist p = new Playlist(nome);
+            usuario.adicionarPlaylist(p);
 
-        usuario.playlists.add(p);
+            System.out.println("Playlist criada!");
+
+        } catch (Exception e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
     }
 
     // gerenciar playlists
@@ -157,19 +137,24 @@ public class Main {
     }
 
     static void listarPlaylists() {
-        if (usuario.playlists.isEmpty()) {
+        if (usuario.getPlaylists().isEmpty()) {
             System.out.println("Nenhuma playlist.");
             return;
         }
 
-        for (int i = 0; i < usuario.playlists.size(); i++) {
-            System.out.println((i + 1) + " - " + usuario.playlists.get(i).nome);
+        for (int i = 0; i < usuario.getPlaylists().size(); i++) {
+            System.out.println((i + 1) + " - " + usuario.getPlaylists().get(i).getNome());
         }
     }
 
     static void addMusicaPlaylist() {
-        if (usuario.playlists.isEmpty()) {
+        if (usuario.getPlaylists().isEmpty()) {
             System.out.println("Crie uma playlist primeiro.");
+            return;
+        }
+
+        if (musicas.isEmpty()) {
+            System.out.println("Cadastre músicas primeiro.");
             return;
         }
 
@@ -183,7 +168,14 @@ public class Main {
         System.out.print("Escolha playlist: ");
         int p = Integer.parseInt(sc.nextLine()) - 1;
 
-        usuario.playlists.get(p).adicionarMusica(musicas.get(m));
+        try {
+            Playlist pl = usuario.getPlaylists().get(p);
+            pl.adicionarMusica(musicas.get(m));
+            System.out.println("Música adicionada!");
+
+        } catch (Exception e) {
+            System.out.println("Erro: índice inválido.");
+        }
     }
 
     static void removerMusicaPlaylist() {
@@ -192,16 +184,27 @@ public class Main {
         System.out.print("Escolha playlist: ");
         int p = Integer.parseInt(sc.nextLine()) - 1;
 
-        Playlist pl = usuario.playlists.get(p);
+        try {
+            Playlist pl = usuario.getPlaylists().get(p);
 
-        for (int i = 0; i < pl.musicas.size(); i++) {
-            System.out.println((i + 1) + " - " + pl.musicas.get(i).titulo);
+            if (pl.getMusicas().isEmpty()) {
+                System.out.println("Playlist vazia.");
+                return;
+            }
+
+            for (int i = 0; i < pl.getMusicas().size(); i++) {
+                System.out.println((i + 1) + " - " + pl.getMusicas().get(i).getTitulo());
+            }
+
+            System.out.print("Escolha musica: ");
+            int m = Integer.parseInt(sc.nextLine()) - 1;
+
+            pl.removerMusica(m);
+            System.out.println("Música removida!");
+
+        } catch (Exception e) {
+            System.out.println("Erro: índice inválido.");
         }
-
-        System.out.print("Escolha musica: ");
-        int m = Integer.parseInt(sc.nextLine()) - 1;
-
-        pl.removerMusica(m);
     }
 
     static void verPlaylist() {
@@ -210,19 +213,24 @@ public class Main {
         System.out.print("Escolha playlist: ");
         int p = Integer.parseInt(sc.nextLine()) - 1;
 
-        Playlist pl = usuario.playlists.get(p);
+        try {
+            Playlist pl = usuario.getPlaylists().get(p);
 
-        if (pl.musicas.isEmpty()) {
-            System.out.println("Playlist vazia.");
-            return;
-        }
+            if (pl.getMusicas().isEmpty()) {
+                System.out.println("Playlist vazia.");
+                return;
+            }
 
-        for (Musica m : pl.musicas) {
-            m.exibir();
+            for (Musica m : pl.getMusicas()) {
+                m.exibir();
+            }
+
+        } catch (Exception e) {
+            System.out.println("Erro: índice inválido.");
         }
     }
 
-    // estatisticas simples
+    // estatisticas
     static void estatisticas() {
         if (musicas.isEmpty()) {
             System.out.println("Sem músicas.");
@@ -233,7 +241,7 @@ public class Main {
         int soma = 0;
 
         for (Musica m : musicas) {
-            soma += m.duracao;
+            soma += m.getDuracao();
         }
 
         int media = soma / total;
