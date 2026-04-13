@@ -5,248 +5,174 @@ public class StreamingMusica {
 
     static Scanner sc = new Scanner(System.in);
     static ArrayList<Musica> musicas = new ArrayList<>();
-    static Usuario usuario = new Usuario("Matheus");
+    static Usuario usuario;
 
     public static void main(String[] args) {
+
+        System.out.println("=== BEM-VINDO AO STREAMING ===");
+
+        System.out.print("Digite seu nome: ");
+        String nome = sc.nextLine();
+
+        System.out.print("Digite seu email: ");
+        String email = sc.nextLine();
+
+        System.out.println("\nEscolha o tipo de conta:");
+        System.out.println("1. Free (Gratuito)");
+        System.out.println("2. Premium (Pago)");
+        System.out.print("Escolha: ");
+        int tipo = Integer.parseInt(sc.nextLine());
+
+        if (tipo == 1) {
+            usuario = new UsuarioFree(nome, email);
+            System.out.println("Conta Free criada!");
+        } else {
+            usuario = criarPremium(nome, email);
+        }
+
+        musicas.add(new Musica("Shape of You", "Ed Sheeran", 240, "pop"));
+        musicas.add(new Musica("Bohemian Rhapsody", "Queen", 354, "rock"));
+        musicas.add(new Musica("Billie Jean", "Michael Jackson", 294, "pop"));
 
         int op;
 
         do {
-            System.out.println("\n1. Cadastrar música");
-            System.out.println("2. Listar todas as músicas");
-            System.out.println("3. Buscar música");
-            System.out.println("4. Criar playlist");
-            System.out.println("5. Gerenciar playlists");
-            System.out.println("6. Exibir estatísticas");
-            System.out.println("0. Sair");
-            System.out.print("Escolha: ");
+            if (usuario instanceof UsuarioFree) {
 
+                System.out.println("\n1. Reproduzir música");
+                System.out.println("2. Ver histórico");
+                System.out.println("3. Criar playlist (máx. 3)");
+                System.out.println("4. Fazer upgrade para Premium");
+                System.out.println("0. Sair");
+
+            } else {
+
+                System.out.println("\n1. Reproduzir música (Alta Qualidade)");
+                System.out.println("2. Ver histórico");
+                System.out.println("3. Criar playlist (ilimitado)");
+                System.out.println("4. Baixar música");
+                System.out.println("5. Ver músicas baixadas");
+                System.out.println("0. Sair");
+            }
+
+            System.out.print("Escolha: ");
             op = Integer.parseInt(sc.nextLine());
 
             switch (op) {
-                case 1: cadastrar(); break;
-                case 2: listar(); break;
-                case 3: buscar(); break;
-                case 4: criarPlaylist(); break;
-                case 5: gerenciar(); break;
-                case 6: estatisticas(); break;
+                case 1:
+                    reproduzir();
+                    break;
+
+                case 2:
+                    usuario.exibirHistorico();
+                    break;
+
+                case 3:
+                    criarPlaylist();
+                    break;
+
+                case 4:
+                    if (usuario instanceof UsuarioFree) {
+                        usuario = upgradeParaPremium();
+                    } else if (usuario instanceof UsuarioPremium up) {
+                        baixar(up);
+                    }
+                    break;
+
+                case 5:
+                    if (usuario instanceof UsuarioPremium up) {
+                        up.listarDownloads();
+                    }
+                    break;
             }
 
         } while (op != 0);
     }
 
-    // cadastrar musica
-    static void cadastrar() {
+    // 🔥 CRIAR PREMIUM
+    static UsuarioPremium criarPremium(String nome, String email) {
+
+        System.out.println("\nEscolha o plano Premium:");
+        System.out.println("1. Mensal (R$ 19,90)");
+        System.out.println("2. Anual (R$ 199,00)");
+        System.out.println("3. Familiar (R$ 29,90)");
+        System.out.print("Escolha: ");
+
+        int p = Integer.parseInt(sc.nextLine());
+
+        String plano;
+        String valor;
+
+        switch (p) {
+            case 1:
+                plano = "Mensal";
+                valor = "R$ 19,90";
+                break;
+            case 2:
+                plano = "Anual";
+                valor = "R$ 199,00";
+                break;
+            case 3:
+                plano = "Familiar";
+                valor = "R$ 29,90";
+                break;
+            default:
+                plano = "Mensal";
+                valor = "R$ 19,90";
+        }
+
+        System.out.println("Conta Premium (" + plano + " - " + valor + ") criada!");
+        return new UsuarioPremium(nome, email, plano);
+    }
+
+    static Usuario upgradeParaPremium() {
+        System.out.println("\nFazendo upgrade para Premium...");
+
+        UsuarioPremium novo = criarPremium(usuario.nome, usuario.email);
+
+        // mantém playlists antigas
+        novo.playlists = usuario.playlists;
+
+        System.out.println("Upgrade concluído!");
+        return novo;
+    }
+
+    static void reproduzir() {
+        listar();
+
+        System.out.print("Escolha a música: ");
+        int i = Integer.parseInt(sc.nextLine()) - 1;
+
         try {
-            System.out.print("Titulo: ");
-            String titulo = sc.nextLine();
-
-            System.out.print("Artista: ");
-            String artista = sc.nextLine();
-
-            System.out.print("Duracao: ");
-            int duracao = Integer.parseInt(sc.nextLine());
-
-            System.out.print("Genero: ");
-            String genero = sc.nextLine();
-
-            Musica m = new Musica(titulo, artista, duracao, genero);
-            musicas.add(m);
-
-            System.out.println("Música cadastrada com sucesso!");
-
+            usuario.reproduzirMusica(musicas.get(i));
         } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
+            System.out.println("Erro!");
         }
     }
 
-    // listar musicas
     static void listar() {
-        if (musicas.isEmpty()) {
-            System.out.println("Nenhuma música cadastrada.");
-            return;
-        }
-
         for (int i = 0; i < musicas.size(); i++) {
             System.out.print((i + 1) + " - ");
             musicas.get(i).exibir();
         }
     }
 
-    // buscar musica
-    static void buscar() {
-        System.out.print("Digite algo: ");
-        String busca = sc.nextLine().toLowerCase();
-
-        boolean achou = false;
-
-        for (Musica m : musicas) {
-            if (m.getTitulo().toLowerCase().contains(busca) ||
-                m.getArtista().toLowerCase().contains(busca) ||
-                m.getGenero().toLowerCase().contains(busca)) {
-
-                m.exibir();
-                achou = true;
-            }
-        }
-
-        if (!achou) {
-            System.out.println("Nada encontrado.");
-        }
-    }
-
-    // criar playlist
     static void criarPlaylist() {
-        try {
-            System.out.print("Nome da playlist: ");
-            String nome = sc.nextLine();
-
-            Playlist p = new Playlist(nome);
-            usuario.adicionarPlaylist(p);
-
-            System.out.println("Playlist criada!");
-
-        } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
-        }
+        System.out.print("Nome da playlist: ");
+        String nome = sc.nextLine();
+        usuario.criarPlaylist(nome);
     }
 
-    // gerenciar playlists
-    static void gerenciar() {
-        int op;
-
-        do {
-            System.out.println("\n=== GERENCIAR PLAYLISTS ===");
-            System.out.println("1. Listar minhas playlists");
-            System.out.println("2. Adicionar música a uma playlist");
-            System.out.println("3. Remover música de uma playlist");
-            System.out.println("4. Exibir detalhes de uma playlist");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha: ");
-
-            op = Integer.parseInt(sc.nextLine());
-
-            switch (op) {
-                case 1: listarPlaylists(); break;
-                case 2: addMusicaPlaylist(); break;
-                case 3: removerMusicaPlaylist(); break;
-                case 4: verPlaylist(); break;
-            }
-
-        } while (op != 0);
-    }
-
-    static void listarPlaylists() {
-        if (usuario.getPlaylists().isEmpty()) {
-            System.out.println("Nenhuma playlist.");
-            return;
-        }
-
-        for (int i = 0; i < usuario.getPlaylists().size(); i++) {
-            System.out.println((i + 1) + " - " + usuario.getPlaylists().get(i).getNome());
-        }
-    }
-
-    static void addMusicaPlaylist() {
-        if (usuario.getPlaylists().isEmpty()) {
-            System.out.println("Crie uma playlist primeiro.");
-            return;
-        }
-
-        if (musicas.isEmpty()) {
-            System.out.println("Cadastre músicas primeiro.");
-            return;
-        }
-
+    static void baixar(UsuarioPremium up) {
         listar();
 
-        System.out.print("Escolha musica: ");
-        int m = Integer.parseInt(sc.nextLine()) - 1;
-
-        listarPlaylists();
-
-        System.out.print("Escolha playlist: ");
-        int p = Integer.parseInt(sc.nextLine()) - 1;
+        System.out.print("Escolha a música: ");
+        int i = Integer.parseInt(sc.nextLine()) - 1;
 
         try {
-            Playlist pl = usuario.getPlaylists().get(p);
-            pl.adicionarMusica(musicas.get(m));
-            System.out.println("Música adicionada!");
-
+            up.baixarMusica(musicas.get(i));
         } catch (Exception e) {
-            System.out.println("Erro: índice inválido.");
+            System.out.println("Erro!");
         }
-    }
-
-    static void removerMusicaPlaylist() {
-        listarPlaylists();
-
-        System.out.print("Escolha playlist: ");
-        int p = Integer.parseInt(sc.nextLine()) - 1;
-
-        try {
-            Playlist pl = usuario.getPlaylists().get(p);
-
-            if (pl.getMusicas().isEmpty()) {
-                System.out.println("Playlist vazia.");
-                return;
-            }
-
-            for (int i = 0; i < pl.getMusicas().size(); i++) {
-                System.out.println((i + 1) + " - " + pl.getMusicas().get(i).getTitulo());
-            }
-
-            System.out.print("Escolha musica: ");
-            int m = Integer.parseInt(sc.nextLine()) - 1;
-
-            pl.removerMusica(m);
-            System.out.println("Música removida!");
-
-        } catch (Exception e) {
-            System.out.println("Erro: índice inválido.");
-        }
-    }
-
-    static void verPlaylist() {
-        listarPlaylists();
-
-        System.out.print("Escolha playlist: ");
-        int p = Integer.parseInt(sc.nextLine()) - 1;
-
-        try {
-            Playlist pl = usuario.getPlaylists().get(p);
-
-            if (pl.getMusicas().isEmpty()) {
-                System.out.println("Playlist vazia.");
-                return;
-            }
-
-            for (Musica m : pl.getMusicas()) {
-                m.exibir();
-            }
-
-        } catch (Exception e) {
-            System.out.println("Erro: índice inválido.");
-        }
-    }
-
-    // estatisticas
-    static void estatisticas() {
-        if (musicas.isEmpty()) {
-            System.out.println("Sem músicas.");
-            return;
-        }
-
-        int total = musicas.size();
-        int soma = 0;
-
-        for (Musica m : musicas) {
-            soma += m.getDuracao();
-        }
-
-        int media = soma / total;
-
-        System.out.println("Total de músicas: " + total);
-        System.out.println("Duração média: " + media + " segundos");
     }
 }

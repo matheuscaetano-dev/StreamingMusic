@@ -1,18 +1,75 @@
 import java.util.ArrayList;
 
 public class Usuario {
-    private String nome;
-    private ArrayList<Playlist> playlists;
+    protected String nome;
+    protected String email;
+    protected ArrayList<Playlist> playlists;
+    protected ArrayList<Musica> historicoReproducao;
 
-    // Construtor padrão
-    public Usuario() {
+    public Usuario(String nome, String email) {
+        setNome(nome);
+        setEmail(email);
         this.playlists = new ArrayList<>();
+        this.historicoReproducao = new ArrayList<>();
     }
 
-    // Construtor parametrizado
-    public Usuario(String nome) {
-        this();
-        setNome(nome);
+    public void reproduzirMusica(Musica musica) {
+        if (musica == null) {
+            System.out.println("Música inválida.");
+            return;
+        }
+
+        System.out.println("🎵 Reproduzindo: " + musica.getTitulo());
+        historicoReproducao.add(musica);
+    }
+
+    public void exibirHistorico() {
+        System.out.println("\n--- HISTÓRICO ---");
+
+        if (historicoReproducao.isEmpty()) {
+            System.out.println("Nenhuma música reproduzida.");
+            return;
+        }
+
+        for (Musica m : historicoReproducao) {
+            m.exibir();
+        }
+    }
+
+    // 🎼 Criar playlist (método original)
+    public void criarPlaylist(String nome) {
+        if (nome == null || nome.isBlank()) {
+            System.out.println("Nome inválido.");
+            return;
+        }
+
+        playlists.add(new Playlist(nome));
+        System.out.println("✅ Playlist criada!");
+    }
+
+    // 🔥 SOBRECARGA (overload)
+    public void criarPlaylist(String nome, int quantidadeInicial) {
+        if (nome == null || nome.isBlank()) {
+            System.out.println("Nome inválido.");
+            return;
+        }
+
+        if (quantidadeInicial < 0) {
+            System.out.println("Quantidade inválida.");
+            return;
+        }
+
+        Playlist p = new Playlist(nome);
+
+        for (int i = 0; i < quantidadeInicial; i++) {
+        }
+
+        playlists.add(p);
+        System.out.println("✅ Playlist criada com configuração inicial!");
+    }
+
+    public ArrayList<Playlist> getPlaylists() {
+        return playlists;
     }
 
     public String getNome() {
@@ -20,20 +77,18 @@ public class Usuario {
     }
 
     public void setNome(String nome) {
-        if (nome == null || nome.trim().isEmpty()) {
+        if (nome == null || nome.isBlank())
             throw new IllegalArgumentException("Nome inválido");
-        }
         this.nome = nome.trim();
     }
 
-    public ArrayList<Playlist> getPlaylists() {
-        return playlists;
+    public String getEmail() {
+        return email;
     }
 
-    public void adicionarPlaylist(Playlist p) {
-        if (p == null) {
-            throw new IllegalArgumentException("Playlist não pode ser null");
-        }
-        playlists.add(p);
+    public void setEmail(String email) {
+        if (email == null || email.isBlank())
+            throw new IllegalArgumentException("Email inválido");
+        this.email = email.trim();
     }
 }

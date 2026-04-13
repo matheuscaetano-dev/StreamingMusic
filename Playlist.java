@@ -4,13 +4,9 @@ public class Playlist {
     private String nome;
     private ArrayList<Musica> musicas;
 
-    public Playlist() {
-        this.musicas = new ArrayList<>();
-    }
-
     public Playlist(String nome) {
-        this();
         setNome(nome);
+        this.musicas = new ArrayList<>();
     }
 
     public String getNome() {
@@ -18,9 +14,8 @@ public class Playlist {
     }
 
     public void setNome(String nome) {
-        if (nome == null || nome.trim().isEmpty()) {
+        if (nome == null || nome.trim().isEmpty())
             throw new IllegalArgumentException("Nome inválido");
-        }
         this.nome = nome.trim();
     }
 
@@ -29,17 +24,14 @@ public class Playlist {
     }
 
     public void adicionarMusica(Musica m) {
-        if (m == null) {
-            throw new IllegalArgumentException("Música não pode ser null");
-        }
+        if (m == null)
+            throw new IllegalArgumentException("Música inválida");
         musicas.add(m);
     }
 
     public void removerMusica(int i) {
-        if (i < 0 || i >= musicas.size()) {
-            System.out.println("Índice inválido");
-            return;
+        if (i >= 0 && i < musicas.size()) {
+            musicas.remove(i);
         }
-        musicas.remove(i);
     }
 }
