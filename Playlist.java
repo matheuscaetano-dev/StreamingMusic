@@ -1,37 +1,23 @@
 import java.util.ArrayList;
 
 public class Playlist {
-    private String nome;
-    private ArrayList<Musica> musicas;
+
+    protected String nome;
+    protected ArrayList<Musica> musicas;
 
     public Playlist(String nome) {
-        setNome(nome);
+        this.nome = nome;
         this.musicas = new ArrayList<>();
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        if (nome == null || nome.trim().isEmpty())
-            throw new IllegalArgumentException("Nome inválido");
-        this.nome = nome.trim();
-    }
-
-    public ArrayList<Musica> getMusicas() {
-        return musicas;
+    public void reproduzir() {
+        System.out.println("🎵 Playlist: " + nome);
+        for (Musica m : musicas) {
+            System.out.println("▶ " + m.getTitulo());
+        }
     }
 
     public void adicionarMusica(Musica m) {
-        if (m == null)
-            throw new IllegalArgumentException("Música inválida");
         musicas.add(m);
-    }
-
-    public void removerMusica(int i) {
-        if (i >= 0 && i < musicas.size()) {
-            musicas.remove(i);
-        }
     }
 }
