@@ -3,35 +3,25 @@ import java.util.ArrayList;
 public class UsuarioPremium extends Usuario {
 
     private String plano;
-    private ArrayList<Musica> musicasBaixadas;
+    private ArrayList<Musica> baixadas;
 
     public UsuarioPremium(String nome, String email, String plano) {
         super(nome, email);
         this.plano = plano;
-        this.musicasBaixadas = new ArrayList<>();
+        baixadas = new ArrayList<>();
     }
 
     @Override
-    public void reproduzirMusica(Musica musica) {
-        System.out.println("🎵 ALTA QUALIDADE: " + musica.getTitulo());
-        historicoReproducao.add(musica);
+    public void reproduzirMusica(Musica m) {
+        m.reproduzir();
+        totalReproducoes++;
+        System.out.println("🎵 ALTA QUALIDADE: " + m.getTitulo());
     }
 
-    public void baixarMusica(Musica m) {
-        if (!musicasBaixadas.contains(m)) {
-            musicasBaixadas.add(m);
-            System.out.println("⬇️ Música baixada!");
-        }
+    public void baixar(Musica m) {
+        baixadas.add(m);
     }
 
-    public void listarDownloads() {
-        if (musicasBaixadas.isEmpty()) {
-            System.out.println("Nenhuma música baixada.");
-            return;
-        }
-
-        for (Musica m : musicasBaixadas) {
-            m.exibir();
-        }
-    }
+    public String getPlano() { return plano; }
+    public ArrayList<Musica> getBaixadas() { return baixadas; }
 }
