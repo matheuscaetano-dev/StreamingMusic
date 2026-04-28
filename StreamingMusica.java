@@ -9,9 +9,40 @@ public class StreamingMusica {
 
     public static void main(String[] args) {
 
+<<<<<<< HEAD
         System.out.println("=== BEM-VINDO AO STREAMING ===");
 
         System.out.print("Digite seu nome: ");
+=======
+        musicas.add(new Musica("Shape of You", "Ed Sheeran", 200, "pop"));
+        musicas.add(new Musica("Bohemian Rhapsody", "Queen", 300, "rock"));
+        musicas.add(new Musica("Billie Jean", "Michael Jackson", 250, "pop"));
+
+        int op;
+
+        do {
+            System.out.println("\n=== MENU ===");
+            System.out.println("1 Criar usuário");
+            System.out.println("2 Login");
+            System.out.println("3 Listar usuários");
+            System.out.println("4 Estatísticas");
+            System.out.println("0 Sair");
+
+            op = Integer.parseInt(sc.nextLine());
+
+            switch (op) {
+                case 1 -> criarUsuario();
+                case 2 -> login();
+                case 3 -> listarUsuarios();
+                case 4 -> estatisticas();
+            }
+
+        } while (op != 0);
+    }
+
+    static void criarUsuario() {
+        System.out.print("Nome: ");
+>>>>>>> e3bd93d (implementa polimorfismo completo e sistema multi-usuário no streaming)
         String nome = sc.nextLine();
 
         System.out.print("Digite seu email: ");
@@ -29,6 +60,7 @@ public class StreamingMusica {
         } else {
             usuario = criarPremium(nome, email);
         }
+<<<<<<< HEAD
 
         musicas.add(new Musica("Shape of You", "Ed Sheeran", 240, "pop"));
         musicas.add(new Musica("Bohemian Rhapsody", "Queen", 354, "rock"));
@@ -38,6 +70,35 @@ public class StreamingMusica {
 
         do {
             if (usuario instanceof UsuarioFree) {
+=======
+
+        System.out.println("Usuário criado!");
+    }
+
+    static void login() {
+        listarUsuarios();
+
+        System.out.print("Escolha: ");
+        int i = Integer.parseInt(sc.nextLine());
+
+        usuarioLogado = usuarios.get(i - 1);
+
+        System.out.println("Logado como: " + usuarioLogado.getNome());
+
+        menuUsuario();
+    }
+
+    static void menuUsuario() {
+        int op;
+
+        do {
+            System.out.println("\n=== MENU USUÁRIO ===");
+            System.out.println("1 Reproduzir música");
+            System.out.println("2 Criar playlist");
+            System.out.println("3 Playlist automática");
+            System.out.println("4 Ver detalhes");
+            System.out.println("0 Sair");
+>>>>>>> e3bd93d (implementa polimorfismo completo e sistema multi-usuário no streaming)
 
                 System.out.println("\n1. Reproduzir música");
                 System.out.println("2. Ver histórico");
@@ -59,6 +120,7 @@ public class StreamingMusica {
             op = Integer.parseInt(sc.nextLine());
 
             switch (op) {
+<<<<<<< HEAD
                 case 1:
                     reproduzir();
                     break;
@@ -84,11 +146,30 @@ public class StreamingMusica {
                         up.listarDownloads();
                     }
                     break;
+=======
+                case 1 -> {
+                    listarMusicas();
+                    int i = Integer.parseInt(sc.nextLine());
+                    usuarioLogado.reproduzirMusica(musicas.get(i - 1));
+                }
+                case 2 -> {
+                    System.out.print("Nome da playlist: ");
+                    String nome = sc.nextLine();
+                    usuarioLogado.criarPlaylist(nome);
+                }
+                case 3 -> {
+                    PlaylistAutomatica p = new PlaylistAutomatica("Pop", "pop");
+                    p.atualizar(musicas);
+                    p.reproduzir();
+                }
+                case 4 -> detalhes(usuarioLogado);
+>>>>>>> e3bd93d (implementa polimorfismo completo e sistema multi-usuário no streaming)
             }
 
         } while (op != 0);
     }
 
+<<<<<<< HEAD
     // 🔥 CRIAR PREMIUM
     static UsuarioPremium criarPremium(String nome, String email) {
 
@@ -147,6 +228,24 @@ public class StreamingMusica {
             usuario.reproduzirMusica(musicas.get(i));
         } catch (Exception e) {
             System.out.println("Erro!");
+=======
+    static void listarMusicas() {
+        for (int i = 0; i < musicas.size(); i++) {
+            System.out.print((i + 1) + " - ");
+            musicas.get(i).exibir();
+        }
+    }
+
+    static void listarUsuarios() {
+        for (int i = 0; i < usuarios.size(); i++) {
+            Usuario u = usuarios.get(i);
+
+            if (u instanceof UsuarioPremium) {
+                System.out.println((i + 1) + " - " + u.getNome() + " (Premium)");
+            } else {
+                System.out.println((i + 1) + " - " + u.getNome() + " (Free)");
+            }
+>>>>>>> e3bd93d (implementa polimorfismo completo e sistema multi-usuário no streaming)
         }
     }
 
@@ -174,5 +273,13 @@ public class StreamingMusica {
         } catch (Exception e) {
             System.out.println("Erro!");
         }
+<<<<<<< HEAD
+=======
+
+        System.out.println("\n=== ESTATÍSTICAS ===");
+        System.out.println("Total usuários: " + usuarios.size());
+        System.out.println("Free: " + free);
+        System.out.println("Premium: " + premium);
+>>>>>>> e3bd93d (implementa polimorfismo completo e sistema multi-usuário no streaming)
     }
 }

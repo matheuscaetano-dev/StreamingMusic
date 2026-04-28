@@ -8,7 +8,11 @@ public class UsuarioPremium extends Usuario {
     public UsuarioPremium(String nome, String email, String plano) {
         super(nome, email);
         this.plano = plano;
+<<<<<<< HEAD
         this.musicasBaixadas = new ArrayList<>();
+=======
+        this.baixadas = new ArrayList<>();
+>>>>>>> e3bd93d (implementa polimorfismo completo e sistema multi-usuário no streaming)
     }
 
     @Override
@@ -18,10 +22,15 @@ public class UsuarioPremium extends Usuario {
     }
 
     public void baixarMusica(Musica m) {
+<<<<<<< HEAD
         if (!musicasBaixadas.contains(m)) {
             musicasBaixadas.add(m);
             System.out.println("⬇️ Música baixada!");
         }
+=======
+        baixadas.add(m);
+        System.out.println("⬇️ Música baixada!");
+>>>>>>> e3bd93d (implementa polimorfismo completo e sistema multi-usuário no streaming)
     }
 
     public void listarDownloads() {

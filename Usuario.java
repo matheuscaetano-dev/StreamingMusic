@@ -38,6 +38,7 @@ public class Usuario {
 
     // 🎼 Criar playlist (método original)
     public void criarPlaylist(String nome) {
+<<<<<<< HEAD
         if (nome == null || nome.isBlank()) {
             System.out.println("Nome inválido.");
             return;
@@ -66,6 +67,16 @@ public class Usuario {
 
         playlists.add(p);
         System.out.println("✅ Playlist criada com configuração inicial!");
+=======
+        playlists.add(new Playlist(nome)); // 👈 agora é só Playlist
+        System.out.println("Playlist criada!");
+    }
+
+    public final void validarEmail(String email) {
+        if (!email.contains("@")) {
+            throw new IllegalArgumentException("Email inválido");
+        }
+>>>>>>> e3bd93d (implementa polimorfismo completo e sistema multi-usuário no streaming)
     }
 
     public ArrayList<Playlist> getPlaylists() {
